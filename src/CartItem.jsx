@@ -1,52 +1,69 @@
-// src/components/CartItem.jsx
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { removeItem, updateQuantity } from '../redux/CartSlice';
 
-const CartItem = ({ item }) => {
+const CartItem = ({ item, onContinueShopping }) => {
   const dispatch = useDispatch();
 
-  const handleUpdateQuantity = (name, newQuantity) => {
-    if (newQuantity < 1) {
-      return;
-    }
-    dispatch(updateQuantity({ name, quantity: newQuantity }));
+  // Handle incrementing quantity
+  const handleIncrement = () => {
+    dispatch(updateQuantity({
+      name: item.name,
+      quantity: item.quantity + 1
+    }));
   };
 
-  const handleRemoveItem = (name) => {
-    dispatch(removeItem(name));
+  // Handle decrementing quantity
+  const handleDecrement = () => {
+    if (item.quantity > 1) {
+      dispatch(updateQuantity({
+        name: item.name,
+        quantity: item.quantity - 1
+      }));
+    } else {
+      // If quantity would drop to 0, remove the item
+      dispatch(removeItem(item.name));
+    }
+  };
+
+  // Handle removing item
+  const handleRemove = () => {
+    dispatch(removeItem(item.name));
+  };
+
+  // Calculate the subtotal for this item
+  const calculateItemSubtotal = () => {
+    // Ensure cost is treated as a number
+    const costValue = typeof item.cost === 'string' && item.cost.startsWith('$') 
+      ? parseFloat(item.cost.substring(1)) 
+      : parseFloat(item.cost);
+    
+    return (costValue * item.quantity).toFixed(2);
   };
 
   return (
     <div className="cart-item">
-      <img src={item.image} alt={item.name} className="cart-item-image" />
+      <div className="cart-item-image">
+        <img src={item.image} alt={item.name} />
+      </div>
       <div className="cart-item-details">
-        <h3 className="cart-item-name">{item.name}</h3>
-        <p className="cart-item-price">${item.cost.toFixed(2)}</p>
+        <h3 className="item-name">{item.name}</h3>
+        <p className="item-price">
+          ${typeof item.cost === 'string' && item.cost.startsWith('$') 
+            ? item.cost.substring(1) 
+            : item.cost}
+        </p>
+      </div>
+      <div className="cart-item-quantity">
+        <button className="quantity-btn decrement" onClick={handleDecrement}>-</button>
+        <span className="quantity">{item.quantity}</span>
+        <button className="quantity-btn increment" onClick={handleIncrement}>+</button>
+      </div>
+      <div className="cart-item-subtotal">
+        <p>${calculateItemSubtotal()}</p>
       </div>
       <div className="cart-item-actions">
-        <div className="quantity-controls">
-          <button 
-            className="quantity-btn"
-            onClick={() => handleUpdateQuantity(item.name, item.quantity - 1)}
-          >
-            -
-          </button>
-          <span className="quantity">{item.quantity}</span>
-          <button 
-            className="quantity-btn"
-            onClick={() => handleUpdateQuantity(item.name, item.quantity + 1)}
-          >
-            +
-          </button>
-        </div>
-        <p className="item-total">${(item.cost * item.quantity).toFixed(2)}</p>
-        <button 
-          className="delete-btn"
-          onClick={() => handleRemoveItem(item.name)}
-        >
-          Remove
-        </button>
+        <button className="remove-btn" onClick={handleRemove}>Remove</button>
       </div>
     </div>
   );
