@@ -1,11 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import CartItem from './CartItem';
 
-const CartPage = () => {
+const CartPage = ({onContinueShopping}) => {
   const cartItems = useSelector(state => state.cart.items);
-  const navigate = useNavigate();
 
   const calculateTotalItems = () => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
@@ -29,11 +27,13 @@ const CartPage = () => {
   };
 
   const handleContinueShopping = () => {
-    navigate('/products');
+    if (typeof onContinueShopping === 'function') {
+      onContinueShopping(); // Tells App to show ProductList again
+    }
   };
 
   const handleCheckoutShopping = () => {
-    alert('Checkout functionality coming soon!');
+    alert('Functionality to be added for future reference');
   };
 
   return (

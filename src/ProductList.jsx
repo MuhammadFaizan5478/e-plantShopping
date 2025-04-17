@@ -350,7 +350,7 @@ const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
     ))}
   </div>
             ) : (
-                <CartPage onContinueShopping={handleContinueShopping} />
+                <CartPage onContinueShopping={() => setShowCart(false)} />
             )}
         </div>
     );
