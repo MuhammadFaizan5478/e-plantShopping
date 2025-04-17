@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
-import Header from './Header';
 import { useDispatch } from 'react-redux';
 import { addItem } from './CartSlice';
 
@@ -15,7 +14,7 @@ function ProductList({ onHomeClick }) {
         const cartItem = {
           id: plant.name,
           name: plant.name,
-          price: plant.cost,
+          price: Number(plant.cost.replace('$', '')),
           image: plant.image,
           quantity: 1
         };

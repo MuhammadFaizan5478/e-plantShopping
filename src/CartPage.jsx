@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import CartItem from '../components/CartItem';
 import Header from '../components/Header';
@@ -7,47 +7,36 @@ import Header from '../components/Header';
 const CartPage = () => {
   const cartItems = useSelector(state => state.cart.items);
   const navigate = useNavigate();
-  
-  // Calculate total number of items
+
   const calculateTotalItems = () => {
     return cartItems.reduce((total, item) => total + item.quantity, 0);
   };
-  
-  // Calculate total amount for all items in cart
+
   const calculateTotalAmount = () => {
     return cartItems.reduce((total, item) => {
-      // Ensure cost is treated as a number
-      const costValue = typeof item.cost === 'string' && item.cost.startsWith('$') 
-        ? parseFloat(item.cost.substring(1)) 
-        : parseFloat(item.cost);
-      
-      return total + (costValue * item.quantity);
+      const price = parseFloat(item.price) || 0;
+      return total + (price * item.quantity);
     }, 0).toFixed(2);
   };
-  
-  // Handle continue shopping button click
-  const handleContinueShopping = (e) => {
+
+  const handleContinueShopping = () => {
     navigate('/products');
   };
-  
-  // Handle checkout button click
-  const handleCheckoutShopping = (e) => {
-    alert('Functionality to be added for future reference');
+
+  const handleCheckoutShopping = () => {
+    alert('Checkout functionality coming soon!');
   };
-  
+
   return (
     <div className="cart-page">
       <Header />
       <div className="container">
         <h1>Shopping Cart</h1>
-        
+
         {cartItems.length === 0 ? (
           <div className="empty-cart">
             <p>Your cart is empty</p>
-            <button 
-              className="continue-shopping-btn"
-              onClick={handleContinueShopping}
-            >
+            <button className="continue-shopping-btn" onClick={handleContinueShopping}>
               Continue Shopping
             </button>
           </div>
@@ -61,7 +50,7 @@ const CartPage = () => {
                 <div className="header-item">Subtotal</div>
                 <div className="header-item">Actions</div>
               </div>
-              
+
               {cartItems.map((item, index) => (
                 <CartItem 
                   key={index} 
@@ -70,24 +59,18 @@ const CartPage = () => {
                 />
               ))}
             </div>
-            
+
             <div className="cart-summary">
               <div className="cart-total">
                 <p>Total Items: <span>{calculateTotalItems()}</span></p>
                 <p>Total Amount: <span>${calculateTotalAmount()}</span></p>
               </div>
-              
+
               <div className="cart-actions">
-                <button 
-                  className="continue-shopping-btn"
-                  onClick={handleContinueShopping}
-                >
+                <button className="continue-shopping-btn" onClick={handleContinueShopping}>
                   Continue Shopping
                 </button>
-                <button 
-                  className="checkout-btn"
-                  onClick={handleCheckoutShopping}
-                >
+                <button className="checkout-btn" onClick={handleCheckoutShopping}>
                   Checkout
                 </button>
               </div>
