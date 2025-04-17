@@ -1,8 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import CartItem from '../components/CartItem';
-import Header from '../components/Header';
+import CartItem from './CartItem';
 
 const CartPage = () => {
   const cartItems = useSelector(state => state.cart.items);
@@ -14,8 +13,18 @@ const CartPage = () => {
 
   const calculateTotalAmount = () => {
     return cartItems.reduce((total, item) => {
-      const price = parseFloat(item.price) || 0;
-      return total + (price * item.quantity);
+      let costValue = 0;
+      
+      if (typeof item.cost === 'string') {
+        const stripped = item.cost.replace(/[^0-9.]/g, ''); // remove $ or any symbol
+        costValue = parseFloat(stripped);
+      } else {
+        costValue = parseFloat(item.cost);
+      }
+  
+      if (isNaN(costValue)) costValue = 0;
+  
+      return total + (costValue * item.quantity);
     }, 0).toFixed(2);
   };
 
@@ -29,7 +38,6 @@ const CartPage = () => {
 
   return (
     <div className="cart-page">
-      <Header />
       <div className="container">
         <h1>Shopping Cart</h1>
 

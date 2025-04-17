@@ -7,8 +7,7 @@ const CartItem = ({ item }) => {
 
   if (!item) return null;
 
-  // Use "price" instead of "cost" for consistency
-  const { name, image, price, quantity } = item;
+  const { name, image, cost, quantity } = item;
 
   const handleIncrement = () => {
     dispatch(updateQuantity({
@@ -33,12 +32,14 @@ const CartItem = ({ item }) => {
   };
 
   const calculateItemSubtotal = () => {
-    const priceValue = typeof price === 'string' && price.startsWith('$') 
-      ? parseFloat(price.substring(1)) 
-      : parseFloat(price);
+    const priceValue = typeof cost === 'string' && cost.startsWith('$') 
+      ? parseFloat(cost.substring(1)) 
+      : parseFloat(cost);
       
     return (priceValue * quantity).toFixed(2);
   };
+
+  
 
   return (
     <div className="cart-item">
@@ -48,9 +49,9 @@ const CartItem = ({ item }) => {
       <div className="cart-item-details">
         <h3 className="item-name">{name}</h3>
         <p className="item-price">
-          ${typeof price === 'string' && price.startsWith('$') 
-            ? price.substring(1) 
-            : price}
+          ${typeof cost === 'string' && cost.startsWith('$') 
+            ? cost.substring(1) 
+            : cost}
         </p>
       </div>
       <div className="cart-item-quantity">
